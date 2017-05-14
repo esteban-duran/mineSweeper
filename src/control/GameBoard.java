@@ -188,7 +188,7 @@ public class GameBoard extends JFrame {
 		lblBombs.setBackground(Color.BLACK);
 		lblBombs.setForeground(Color.WHITE);
 		lblBombs.setOpaque(true);
-		bombText = "         " + bombsAmount;
+		updateFlagCounter();
 		lblBombs.setText(bombText);
 		lblBombs.setFont(lblBombs.getFont().deriveFont(35.0f));
 		getContentPane().add(lblBombs, gbc);
