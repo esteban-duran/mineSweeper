@@ -4,6 +4,7 @@ import control.SmileyMouseAdapter;
 
 public class SmileyClickDecorator extends SmileyDecorator{
 
+	
 	public SmileyClickDecorator(SmileyStyle reference) {
 		super(reference);
 	}

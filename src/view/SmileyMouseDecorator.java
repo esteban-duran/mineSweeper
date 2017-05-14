@@ -6,6 +6,7 @@ public class SmileyMouseDecorator extends SmileyDecorator {
 
 	public SmileyMouseDecorator(SmileyStyle reference) {
 		super(reference);
+
 	}
 
 	@Override

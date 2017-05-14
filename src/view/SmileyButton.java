@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.util.Observable;
 
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ public class SmileyButton implements SmileyStyle{
 	
 	public SmileyButton() {
 		smileyButton = new JButton();
+		smileyButton.setPreferredSize(new Dimension(100,45));
 	}
 	
 	@Override

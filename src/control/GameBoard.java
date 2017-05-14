@@ -3,12 +3,10 @@ package control;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Timer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,8 +17,8 @@ import view.GameControlPanel;
 import view.GameMenu;
 import view.GamePanel;
 import view.SmileyBlackWhiteDecorator;
-import view.SmileyMouseDecorator;
 import view.SmileyButton;
+import view.SmileyMouseDecorator;
 
 public class GameBoard extends JFrame {
 
@@ -169,6 +167,7 @@ public class GameBoard extends JFrame {
 		getContentPane().removeAll();
 		gbc = new GridBagConstraints();
 
+		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 3;
@@ -268,6 +267,9 @@ public class GameBoard extends JFrame {
 				}
 			}
 		}
+		
+		// ------------- CHANGE SMILEY TO SAD FACE
+		
 	}
 
 	public static void main(String[] args) {
