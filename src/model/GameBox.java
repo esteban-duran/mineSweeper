@@ -109,7 +109,7 @@ public abstract class GameBox extends Observable implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (!(this instanceof BombBox)) {
+		if (!(this instanceof BombBox) && !this.isFlagActive()) {
 			if (empty)
 				button.setEnabled(false);
 			else {

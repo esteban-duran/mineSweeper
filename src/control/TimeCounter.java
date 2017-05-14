@@ -7,12 +7,14 @@ public class TimeCounter extends Thread {
 	private int mins;
 	private int secs;
 	private JLabel label;
+	private boolean alive;
 
 	public TimeCounter(JLabel label) {
 		time = new StringBuilder();
 		this.label = label;
 		mins = 0;
 		secs = 0;
+		alive = true;
 	}
 
 	public String getTime() {
@@ -43,19 +45,27 @@ public class TimeCounter extends Thread {
 		while (true) {
 			secs++;
 			try {
-				label.setText(getTime());
-				Thread.sleep(1000);
+				if (alive) {
+					label.setText(getTime());
+					Thread.sleep(1000);
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public void reboot(){
+
+	public void reboot() {
+		alive = true;
 		mins = 0;
 		secs = 0;
 		time.setLength(0);
 		time = new StringBuilder();
+	}
+	
+	public void stopTimer(){
+		// -- Kills this thread
+		alive = false;
 	}
 }

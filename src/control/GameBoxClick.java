@@ -1,5 +1,6 @@
 package control;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,34 +21,39 @@ public class GameBoxClick extends MouseAdapter {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
+		if (gameBox.getButton().isEnabled()) {
 			if (!gameBox.isFlagActive()) {
-				gameBox.getButton().setIcon(scaleImageIcon(GameBox.URL_IMG_FLAG));
-				gameBox.getButton().setText(null);
-				gameBox.setFlagActive(true);
-			} else {
+
+				if (SwingUtilities.isRightMouseButton(e)) {
+					if (GameBoard.getInstance().flagsRemaining()) {
+						gameBox.getButton().setIcon(scaleImageIcon(GameBox.URL_IMG_FLAG));
+						gameBox.getButton().setText(null);
+						gameBox.setFlagActive(true);
+						GameBoard.getInstance().addFlagAmount();
+					}
+				} else {
+					if (!gameBox.isEmpty()) {
+						gameBox.getButton().setText("" + gameBox.getNumber());
+						gameBox.getButton().setEnabled(false);
+					} else {
+						if (gameBox instanceof BombBox) {
+							gameBox.getButton().setIcon(scaleImageIcon(GameBox.URL_IMG_BOMB));
+							gameBox.getButton().setBackground(Color.RED);
+							gameBox.getButton().setText(null);
+							gameBox.getButton().setEnabled(false);
+							GameBoard.getInstance().lostGame();
+						} else {
+
+							gameBox.getButton().setEnabled(false);
+						}
+						gameBox.changed();
+						gameBox.notifyObservers();
+					}
+				}
+			} else if (SwingUtilities.isRightMouseButton(e)){
 				gameBox.getButton().setIcon(null);
 				gameBox.setFlagActive(false);
-			}
-		} else {
-			if (!gameBox.isEmpty()) {
-				gameBox.getButton().setText("" + gameBox.getNumber());
-				gameBox.getButton().setEnabled(false);
-				if (gameBox.isFlagActive())
-					gameBox.getButton().setIcon(null);
-			} else {
-				if (gameBox instanceof BombBox) {
-					gameBox.getButton().setIcon(scaleImageIcon(GameBox.URL_IMG_BOMB));
-					gameBox.getButton().setText(null);
-					gameBox.getButton().setEnabled(false);
-					
-				} else {
-					gameBox.getButton().setEnabled(false);
-					if (gameBox.isFlagActive())
-						gameBox.getButton().setIcon(null);
-				}
-				gameBox.changed();
-				gameBox.notifyObservers();
+				GameBoard.getInstance().subFlagAmount();
 			}
 		}
 	}
@@ -58,5 +64,5 @@ public class GameBoxClick extends MouseAdapter {
 		Image newimg = image.getScaledInstance(GameBox.IMG_SIZE, GameBox.IMG_SIZE, Image.SCALE_DEFAULT);
 		return new ImageIcon(newimg);
 	}
-	
+
 }

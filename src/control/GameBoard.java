@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Timer;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -36,11 +38,14 @@ public class GameBoard extends JFrame {
 
 	// ------- BOMB COUNTER
 	private int bombsAmount;
+	private int flagAmount;
 	private JLabel lblBombs;
+	private String bombText;
 
 	// ------- TIMER
 	private TimeCounter timeCounter;
 	private JLabel lblTimer;
+	private GridBagConstraints gbc;
 
 	private GameBoard() {
 		gameBoxFactory = new GameBoxFactory();
@@ -52,6 +57,7 @@ public class GameBoard extends JFrame {
 
 		// ------- TIMER
 		lblTimer = new JLabel();
+
 	}
 
 	public static GameBoard getInstance() {
@@ -97,6 +103,7 @@ public class GameBoard extends JFrame {
 		board = new GameBox[gameSize][gameSize];
 		int numberOfBombs = (int) Math.round((new Double(gameSize) / new Double(64)) * Math.pow(gameSize, 2));
 		bombsAmount = numberOfBombs;
+		flagAmount = 0;
 		Random random = new Random();
 		HashMap<Integer, Integer> bombs = new HashMap<>();
 
@@ -160,7 +167,7 @@ public class GameBoard extends JFrame {
 	public void startGame() {
 		initBoard();
 		getContentPane().removeAll();
-		GridBagConstraints gbc = new GridBagConstraints();
+		gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -174,16 +181,16 @@ public class GameBoard extends JFrame {
 		// -----------------------------------------------
 		// ------------- BOMB LABEL SET UP ---------------
 		// -----------------------------------------------
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.anchor = gbc.WEST;
 		lblBombs.setBackground(Color.BLACK);
 		lblBombs.setForeground(Color.WHITE);
 		lblBombs.setOpaque(true);
-		String bombText = "         "+bombsAmount; 
+		bombText = "         " + bombsAmount;
 		lblBombs.setText(bombText);
-		lblBombs.setFont (lblBombs.getFont ().deriveFont (35.0f));
+		lblBombs.setFont(lblBombs.getFont().deriveFont(35.0f));
 		getContentPane().add(lblBombs, gbc);
 
 		// -----------------------------------------------
@@ -194,7 +201,7 @@ public class GameBoard extends JFrame {
 		if (timeCounter == null) {
 			timeCounter = new TimeCounter(lblTimer);
 			timeCounter.start();
-		} else
+		} else if(timeCounter.isAlive())
 			timeCounter.reboot();
 
 		// ------------ TIMER INITIALIZATION -------------
@@ -205,12 +212,62 @@ public class GameBoard extends JFrame {
 		lblTimer.setBackground(Color.BLACK);
 		lblTimer.setForeground(Color.RED);
 		lblTimer.setOpaque(true);
-		lblTimer.setText(""+bombsAmount);
-		lblTimer.setFont (lblTimer.getFont ().deriveFont (35.0f));
+		lblTimer.setText("00:00");
+		lblTimer.setFont(lblTimer.getFont().deriveFont(35.0f));
 		getContentPane().add(lblTimer, gbc);
 		// -----------------------------------------------
 
 		pack();
+	}
+
+	public boolean flagsRemaining() {
+		return (bombsAmount > flagAmount) ? true : false;
+	}
+
+	public void addFlagAmount() {
+		flagAmount++;
+		updateFlagCounter();
+	}
+
+	public void subFlagAmount() {
+		flagAmount--;
+		updateFlagCounter();
+	}
+
+	public void updateFlagCounter() {
+		bombText = "         " + (bombsAmount - flagAmount);
+		lblBombs.setText(bombText);
+	}
+
+	public void lostGame() {
+
+		// ------------- REPLACE TIMER LABEL TEMPORARILY
+		String timeOfLoss = lblTimer.getText();
+		JLabel newTimer = new JLabel(timeOfLoss);
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.anchor = gbc.EAST;
+		newTimer.setBackground(Color.BLACK);
+		newTimer.setForeground(Color.RED);
+		newTimer.setOpaque(true);
+		newTimer.setFont(newTimer.getFont().deriveFont(35.0f));
+		getContentPane().remove(lblTimer);
+		getContentPane().add(newTimer, gbc);
+		// ------------- REPLACE TIMER LABEL TEMPORARILY
+		
+		
+		// ------------- DISCOVER EVERY BOMB ON THE BOARD
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				GameBox gameBox = board[i][j];
+				gameBox.getButton().setEnabled(false);
+				JButton btn = gameBox.getButton();
+				if (gameBox instanceof BombBox) {
+					btn.setIcon(GameBoxClick.scaleImageIcon(GameBox.URL_IMG_BOMB));
+					btn.setText(null);
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {
@@ -221,8 +278,10 @@ public class GameBoard extends JFrame {
 		gameBoard.setLayout(new GridBagLayout());
 		gameBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameBoard.setLocationRelativeTo(null);
+		gameBoard.setResizable(false);
 		gameBoard.setSize(500, 500);
 		gameBoard.setGameSize(LEVEL_EASY);
 		gameBoard.startGame();
 	}
+
 }
