@@ -18,6 +18,7 @@ import view.GameMenu;
 import view.GamePanel;
 import view.SmileyBlackWhiteDecorator;
 import view.SmileyButton;
+import view.SmileyDecorator;
 import view.SmileyMouseDecorator;
 
 public class GameBoard extends JFrame {
@@ -33,6 +34,7 @@ public class GameBoard extends JFrame {
 	private int gameSize;
 	private GameBoxFactory gameBoxFactory;
 	private HashMap<GameStyleType, GameStyle> gameStyles;
+	private SmileyDecorator smileyButton;
 
 	// ------- BOMB COUNTER
 	private int bombsAmount;
@@ -78,7 +80,7 @@ public class GameBoard extends JFrame {
 			return board[x][y];
 	}
 
-	public void observeNeighbors(int x, int y) {
+	public void observerNeighbors(int x, int y) {
 		if (isValidCord(x - 1, y - 1))
 			board[x][y].addObserver(board[x - 1][y - 1]);
 		if (isValidCord(x - 1, y))
@@ -99,6 +101,8 @@ public class GameBoard extends JFrame {
 
 	private void initBoard() {
 		board = new GameBox[gameSize][gameSize];
+		smileyButton = new SmileyMouseDecorator(new SmileyBlackWhiteDecorator(new SmileyButton()));
+		
 		int numberOfBombs = (int) Math.round((new Double(gameSize) / new Double(64)) * Math.pow(gameSize, 2));
 		bombsAmount = numberOfBombs;
 		flagAmount = 0;
@@ -130,10 +134,9 @@ public class GameBoard extends JFrame {
 			for (int y = 0; y < gameSize; y++, id++) {
 				board[x][y].config(id, gameSize);
 				if (!(board[x][y] instanceof BombBox)) {
-					observeNeighbors(x, y);
+					observerNeighbors(x, y);
 				} else {
-					// ---------------HOW TO OBSERVE TO TERMINATE THE
-					// GAME???------
+					board[x][y].addObserver(smileyButton);
 				}
 			}
 		}
@@ -175,7 +178,7 @@ public class GameBoard extends JFrame {
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		getContentPane().add(
-				new GameControlPanel(new SmileyMouseDecorator(new SmileyBlackWhiteDecorator(new SmileyButton()))), gbc);
+				new GameControlPanel(smileyButton), gbc);
 
 		// -----------------------------------------------
 		// ------------- BOMB LABEL SET UP ---------------
@@ -266,10 +269,7 @@ public class GameBoard extends JFrame {
 					btn.setText(null);
 				}
 			}
-		}
-		
-		// ------------- CHANGE SMILEY TO SAD FACE
-		
+		}		
 	}
 
 	public static void main(String[] args) {

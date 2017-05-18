@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Observable;
 
@@ -22,8 +23,10 @@ public class SmileyButton implements SmileyStyle{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
+		smileyButton.setBackground(Color.BLACK);
+		smileyButton.setIcon(GameBoxClick.scaleImageIcon(SmileyButton.URL_SAD_IMG));
+		smileyButton.setText(null);
+		smileyButton.setEnabled(false);
 	}
 
 	@Override

@@ -6,7 +6,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
-public class SmileyMouseAdapter extends MouseAdapter{
+import view.ISmileyMouse;
+
+public class SmileyMouseAdapter extends MouseAdapter implements ISmileyMouse{
 	
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -23,6 +25,9 @@ public class SmileyMouseAdapter extends MouseAdapter{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		JButton button = (JButton) e.getSource();
-		button.setText("Smile");
+		if(button.isEnabled())
+			button.setText("Smiling");
+		else
+			button.setText("Sad");
 	}
 }
