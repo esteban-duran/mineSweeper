@@ -21,6 +21,7 @@ import view.SmileyButton;
 import view.SmileyDecorator;
 import view.SmileyMouseDecorator;
 
+@SuppressWarnings("serial")
 public class GameBoard extends JFrame {
 
 	public static final int LEVEL_EASY = 8;
@@ -46,6 +47,9 @@ public class GameBoard extends JFrame {
 	private TimeCounter timeCounter;
 	private JLabel lblTimer;
 	private GridBagConstraints gbc;
+
+	// ----- STATUS
+	private GameStatus gameStatus;
 
 	private GameBoard() {
 		gameBoxFactory = new GameBoxFactory();
@@ -102,7 +106,7 @@ public class GameBoard extends JFrame {
 	private void initBoard() {
 		board = new GameBox[gameSize][gameSize];
 		smileyButton = new SmileyMouseDecorator(new SmileyBlackWhiteDecorator(new SmileyButton()));
-		
+
 		int numberOfBombs = (int) Math.round((new Double(gameSize) / new Double(64)) * Math.pow(gameSize, 2));
 		bombsAmount = numberOfBombs;
 		flagAmount = 0;
@@ -177,8 +181,7 @@ public class GameBoard extends JFrame {
 		getContentPane().add(new GamePanel(board), gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		getContentPane().add(
-				new GameControlPanel(smileyButton), gbc);
+		getContentPane().add(new GameControlPanel(smileyButton), gbc);
 
 		// -----------------------------------------------
 		// ------------- BOMB LABEL SET UP ---------------
@@ -186,7 +189,7 @@ public class GameBoard extends JFrame {
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.anchor = gbc.WEST;
+		gbc.anchor = GridBagConstraints.WEST;
 		lblBombs.setBackground(Color.BLACK);
 		lblBombs.setForeground(Color.WHITE);
 		lblBombs.setOpaque(true);
@@ -203,14 +206,14 @@ public class GameBoard extends JFrame {
 		if (timeCounter == null) {
 			timeCounter = new TimeCounter(lblTimer);
 			timeCounter.start();
-		} else if(timeCounter.isAlive())
+		} else if (timeCounter.isAlive())
 			timeCounter.reboot();
 
 		// ------------ TIMER INITIALIZATION -------------
 
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbc.anchor = gbc.EAST;
+		gbc.anchor = GridBagConstraints.EAST;
 		lblTimer.setBackground(Color.BLACK);
 		lblTimer.setForeground(Color.RED);
 		lblTimer.setOpaque(true);
@@ -248,7 +251,7 @@ public class GameBoard extends JFrame {
 		JLabel newTimer = new JLabel(timeOfLoss);
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbc.anchor = gbc.EAST;
+		gbc.anchor = GridBagConstraints.EAST;
 		newTimer.setBackground(Color.BLACK);
 		newTimer.setForeground(Color.RED);
 		newTimer.setOpaque(true);
@@ -256,8 +259,7 @@ public class GameBoard extends JFrame {
 		getContentPane().remove(lblTimer);
 		getContentPane().add(newTimer, gbc);
 		// ------------- REPLACE TIMER LABEL TEMPORARILY
-		
-		
+
 		// ------------- DISCOVER EVERY BOMB ON THE BOARD
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board.length; j++) {
@@ -269,7 +271,7 @@ public class GameBoard extends JFrame {
 					btn.setText(null);
 				}
 			}
-		}		
+		}
 	}
 
 	public static void main(String[] args) {
@@ -284,6 +286,124 @@ public class GameBoard extends JFrame {
 		gameBoard.setSize(500, 500);
 		gameBoard.setGameSize(LEVEL_EASY);
 		gameBoard.startGame();
+
+		/*
+		 * UNCOMMENT FOR STATUS WINDOW 
+		 * gameBoard.gameStatus = new
+		 * GameStatus(LEVEL_EASY); gameBoard.gameStatus.start();
+		 */
+
 	}
 
+	// -----------------------------------------------
+	// ------------ GETTERS & SETTERS ----------------
+	// -----------------------------------------------
+
+	public GameMenu getGameMenu() {
+		return gameMenu;
+	}
+
+	public void setGameMenu(GameMenu gameMenu) {
+		this.gameMenu = gameMenu;
+	}
+
+	public GameBox[][] getBoard() {
+		return board;
+	}
+
+	public void setBoard(GameBox[][] board) {
+		this.board = board;
+	}
+
+	public GameBoxFactory getGameBoxFactory() {
+		return gameBoxFactory;
+	}
+
+	public void setGameBoxFactory(GameBoxFactory gameBoxFactory) {
+		this.gameBoxFactory = gameBoxFactory;
+	}
+
+	public HashMap<GameStyleType, GameStyle> getGameStyles() {
+		return gameStyles;
+	}
+
+	public void setGameStyles(HashMap<GameStyleType, GameStyle> gameStyles) {
+		this.gameStyles = gameStyles;
+	}
+
+	public SmileyDecorator getSmileyButton() {
+		return smileyButton;
+	}
+
+	public void setSmileyButton(SmileyDecorator smileyButton) {
+		this.smileyButton = smileyButton;
+	}
+
+	public int getBombsAmount() {
+		return bombsAmount;
+	}
+
+	public void setBombsAmount(int bombsAmount) {
+		this.bombsAmount = bombsAmount;
+	}
+
+	public int getFlagAmount() {
+		return flagAmount;
+	}
+
+	public void setFlagAmount(int flagAmount) {
+		this.flagAmount = flagAmount;
+	}
+
+	public JLabel getLblBombs() {
+		return lblBombs;
+	}
+
+	public void setLblBombs(JLabel lblBombs) {
+		this.lblBombs = lblBombs;
+	}
+
+	public String getBombText() {
+		return bombText;
+	}
+
+	public void setBombText(String bombText) {
+		this.bombText = bombText;
+	}
+
+	public TimeCounter getTimeCounter() {
+		return timeCounter;
+	}
+
+	public void setTimeCounter(TimeCounter timeCounter) {
+		this.timeCounter = timeCounter;
+	}
+
+	public JLabel getLblTimer() {
+		return lblTimer;
+	}
+
+	public void setLblTimer(JLabel lblTimer) {
+		this.lblTimer = lblTimer;
+	}
+
+	public GridBagConstraints getGbc() {
+		return gbc;
+	}
+
+	public void setGbc(GridBagConstraints gbc) {
+		this.gbc = gbc;
+	}
+
+	public int getGameSize() {
+		return gameSize;
+	}
+
+	public GameStatus getGameStatus() {
+		return gameStatus;
+	}
+
+	public void setGameStatus(GameStatus gameStatus) {
+		this.gameStatus = gameStatus;
+	}
 }
